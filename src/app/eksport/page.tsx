@@ -46,7 +46,6 @@ function EksportContent() {
       .then(data => setItems(Array.isArray(data) ? data : []))
       .catch(() => setItems([]));
 
-    // Pobierz info o endpointach dane.gov.pl
     fetch("/api/export/dane-gov?type=info")
       .then(res => res.json())
       .then(data => setDaneGovInfo(data))
@@ -109,38 +108,19 @@ function EksportContent() {
   const hasFilters = kategoriaFilter || powiatFilter || statusFilter || wojewodztwoFilter;
 
   const formats: { id: ExportFormat; name: string; description: string }[] = [
-    {
-      id: "json",
-      name: "JSON",
-      description: "Do integracji z API i aplikacjami",
-    },
-    {
-      id: "csv",
-      name: "CSV",
-      description: "Kompatybilny z Excel",
-    },
-    {
-      id: "xml",
-      name: "XML",
-      description: "Standardowy format wymiany danych",
-    },
+    { id: "json", name: "JSON", description: "Do integracji z API i aplikacjami" },
+    { id: "csv", name: "CSV", description: "Kompatybilny z Excel" },
+    { id: "xml", name: "XML", description: "Standardowy format wymiany danych" },
   ];
 
   return (
     <div className="py-8 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gov-black mb-2">
-            Eksport danych
-          </h1>
-          <p className="text-gov-text">
-            Pobierz dane o rzeczach znalezionych w formacie zgodnym z dane.gov.pl
-          </p>
+          <h1 className="text-2xl font-bold text-gov-black mb-2">Eksport danych</h1>
+          <p className="text-gov-text">Pobierz dane o rzeczach znalezionych</p>
         </div>
 
-        {/* ============================================ */}
-        {/* SEKCJA DANE.GOV.PL - HARVESTER */}
-        {/* ============================================ */}
         <Card className="mb-8 border-2 border-gov-primary bg-gradient-to-br from-gov-blue-light to-white">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-12 h-12 bg-gov-primary rounded-lg flex items-center justify-center">
@@ -149,41 +129,22 @@ function EksportContent() {
               </svg>
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gov-black">
-                🇵🇱 Publikacja na dane.gov.pl
-              </h2>
-              <p className="text-sm text-gov-text">
-                Eksport zgodny z harvesterem portalu otwartych danych
-              </p>
+              <h2 className="text-xl font-bold text-gov-black">🇵🇱 Eksport dla dane.gov.pl</h2>
+              <p className="text-sm text-gov-text">XML i MD5 zgodne z harvesterem</p>
             </div>
           </div>
 
-          {/* Status danych */}
           <div className="bg-white rounded-lg p-4 mb-4 border border-gov-border">
-            <div className="grid sm:grid-cols-3 gap-4 text-center">
-              <div>
-                <div className="text-3xl font-bold text-gov-primary">{daneGovInfo?.data?.items_count || items.length}</div>
-                <div className="text-sm text-gov-text">rekordów do publikacji</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-green-600">✓</div>
-                <div className="text-sm text-gov-text">XML zgodny z XSD 1.13</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-green-600">✓</div>
-                <div className="text-sm text-gov-text">MD5 checksum</div>
-              </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-gov-primary">{daneGovInfo?.data?.items_count || items.length}</div>
+              <div className="text-sm text-gov-text">rekordów do eksportu</div>
             </div>
           </div>
 
-          {/* URL do harvestera */}
           {daneGovInfo && (
             <div className="space-y-3 mb-4">
-              {/* URL harvestera - główny */}
               <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                <label className="block text-xs font-semibold text-green-800 mb-1">
-                  🎯 URL dla harvestera dane.gov.pl (REKOMENDOWANY):
-                </label>
+                <label className="block text-xs font-semibold text-green-800 mb-1">URL dla harvestera:</label>
                 <div className="flex gap-2">
                   <code className="flex-1 bg-white px-3 py-2 rounded border border-green-300 text-sm font-mono break-all">
                     {daneGovInfo.harvester?.xml_url || `${window.location.origin}/harvester/rzeczy-znalezione.xml`}
@@ -196,147 +157,34 @@ function EksportContent() {
                     {copied === "harvester" ? "✓" : "Kopiuj"}
                   </Button>
                 </div>
-                <p className="text-xs text-green-700 mt-1">
-                  Harvester automatycznie pobierze plik .md5 (zamienia .xml → .md5)
-                </p>
               </div>
-
-              {/* Alternatywne URL-e */}
-              <details className="bg-gov-black/5 rounded-lg">
-                <summary className="px-3 py-2 cursor-pointer text-xs font-semibold text-gov-text">
-                  Alternatywne URL-e (z parametrami)
-                </summary>
-                <div className="p-3 pt-0 space-y-2">
-                  <div className="flex gap-2">
-                    <code className="flex-1 bg-white px-2 py-1 rounded border border-gov-border text-xs font-mono break-all">
-                      {daneGovInfo.endpoints.xml}
-                    </code>
-                    <Button
-                      variant="outline"
-                      onClick={() => copyToClipboard(daneGovInfo.endpoints.xml, "xml")}
-                      className="shrink-0 text-xs px-2"
-                    >
-                      {copied === "xml" ? "✓" : "XML"}
-                    </Button>
-                  </div>
-                  <div className="flex gap-2">
-                    <code className="flex-1 bg-white px-2 py-1 rounded border border-gov-border text-xs font-mono break-all">
-                      {daneGovInfo.endpoints.md5}
-                    </code>
-                    <Button
-                      variant="outline"
-                      onClick={() => copyToClipboard(daneGovInfo.endpoints.md5, "md5")}
-                      className="shrink-0 text-xs px-2"
-                    >
-                      {copied === "md5" ? "✓" : "MD5"}
-                    </Button>
-                  </div>
-                </div>
-              </details>
 
               {daneGovInfo.md5 && (
                 <div className="text-xs text-gov-text-light">
-                  <strong>Aktualny hash MD5:</strong>{" "}
-                  <code className="bg-gray-100 px-1 rounded">{daneGovInfo.md5.xml}</code>
+                  <strong>Hash MD5:</strong> <code className="bg-gray-100 px-1 rounded">{daneGovInfo.md5.xml}</code>
                 </div>
               )}
             </div>
           )}
 
-          {/* Przyciski pobierania */}
-          <div className="grid sm:grid-cols-2 gap-3 mb-4">
-            <Button
-              onClick={() => window.open("/api/export/dane-gov?type=xml", "_blank")}
-              className="flex items-center justify-center gap-2"
-            >
+          <div className="grid sm:grid-cols-2 gap-3">
+            <Button onClick={() => window.open("/harvester/rzeczy-znalezione.xml", "_blank")} className="flex items-center justify-center gap-2">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
               </svg>
-              Pobierz XML (harvester)
+              Pobierz XML
             </Button>
-            <Button
-              variant="outline"
-              onClick={() => window.open("/api/export/dane-gov?type=md5", "_blank")}
-              className="flex items-center justify-center gap-2"
-            >
+            <Button variant="outline" onClick={() => window.open("/harvester/rzeczy-znalezione.md5", "_blank")} className="flex items-center justify-center gap-2">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
               Pobierz MD5
             </Button>
           </div>
-
-          <div className="grid sm:grid-cols-2 gap-3">
-            <Button
-              variant="outline"
-              onClick={() => window.open("/api/export/dane-gov?type=csv", "_blank")}
-              className="flex items-center justify-center gap-2"
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              Pobierz CSV
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => window.open("/api/export/dane-gov?type=info", "_blank")}
-              className="flex items-center justify-center gap-2"
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              Info (JSON)
-            </Button>
-          </div>
         </Card>
 
-        {/* Instrukcja publikacji */}
-        <Card className="mb-8 bg-amber-50 border-amber-200">
-          <h3 className="font-bold text-gov-black mb-3 flex items-center gap-2">
-            <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            Jak opublikować dane na dane.gov.pl?
-          </h3>
-          <ol className="list-decimal list-inside space-y-2 text-sm text-gov-text">
-            <li>
-              <strong>Wdróż aplikację</strong> na Vercel lub inny hosting (dane muszą być dostępne publicznie)
-            </li>
-            <li>
-              <strong>Skopiuj URL pliku XML</strong> z zielonego pola powyżej (kończy się na <code>.xml</code>)
-            </li>
-            <li>
-              <strong>Zaloguj się do panelu dane.gov.pl</strong> jako administrator instytucji
-            </li>
-            <li>
-              <strong>Dodaj nowe źródło danych</strong> typu &quot;XML&quot; i wklej URL
-            </li>
-            <li>
-              <strong>System automatycznie pobierze plik MD5</strong> (zmienia .xml na .md5 w URL)
-            </li>
-            <li>
-              <strong>Ustaw harmonogram</strong> importu (np. codziennie, co tydzień)
-            </li>
-          </ol>
-          <div className="mt-4 p-3 bg-white rounded border border-amber-200 space-y-2">
-            <p className="text-xs text-gov-text-light">
-              <strong>💡 Tip:</strong> Harvester dane.gov.pl sprawdza MD5 przed każdym importem.
-              Jeśli hash się nie zmienił, dane nie są ponownie importowane (oszczędność zasobów).
-            </p>
-            <p className="text-xs text-gov-text-light">
-              <strong>🔗 Format URL:</strong> Używamy URL-i z rozszerzeniami (<code>/harvester/rzeczy-znalezione.xml</code>)
-              zamiast parametrów, bo harvester automatycznie podmienia <code>.xml</code> → <code>.md5</code>.
-            </p>
-          </div>
-        </Card>
-
-        {/* ============================================ */}
-        {/* STANDARDOWY EKSPORT Z FILTRAMI */}
-        {/* ============================================ */}
         <Card className="mb-8">
-          <h2 className="font-bold text-gov-black mb-4 border-b border-gov-border pb-2">
-            Eksport z filtrami (własny format)
-          </h2>
+          <h2 className="font-bold text-gov-black mb-4 border-b border-gov-border pb-2">Eksport z filtrami</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <Select
               label="Kategoria"
@@ -376,32 +224,18 @@ function EksportContent() {
             />
           </div>
           <div className="mt-4 flex justify-between items-center">
-            <p className="text-sm text-gov-text">
-              <strong>{filteredCount}</strong> rekordów do eksportu
-            </p>
+            <p className="text-sm text-gov-text"><strong>{filteredCount}</strong> rekordów do eksportu</p>
             {hasFilters && (
-              <button 
-                onClick={clearFilters}
-                className="text-sm text-gov-blue hover:underline font-bold"
-              >
-                Wyczyść filtry
-              </button>
+              <button onClick={clearFilters} className="text-sm text-gov-blue hover:underline font-bold">Wyczyść filtry</button>
             )}
           </div>
         </Card>
 
         <div className="grid md:grid-cols-3 gap-4 mb-8">
           {formats.map((format) => (
-            <div
-              key={format.id}
-              className="bg-white border border-gov-border p-6"
-            >
-              <h3 className="text-lg font-bold text-gov-black mb-1">
-                {format.name}
-              </h3>
-              <p className="text-sm text-gov-text-light mb-4">
-                {format.description}
-              </p>
+            <div key={format.id} className="bg-white border border-gov-border p-6">
+              <h3 className="text-lg font-bold text-gov-black mb-1">{format.name}</h3>
+              <p className="text-sm text-gov-text-light mb-4">{format.description}</p>
               <Button
                 variant="outline"
                 onClick={() => handleExport(format.id)}
@@ -415,24 +249,8 @@ function EksportContent() {
           ))}
         </div>
 
-        {/* Info o zgodności */}
-        <Card className="bg-gov-blue-light border-gov-blue">
-          <h3 className="font-bold text-gov-black mb-2">
-            ✅ Zgodność z wymaganiami
-          </h3>
-          <ul className="text-sm text-gov-text space-y-1">
-            <li>• <strong>XML zgodny z XSD 1.13</strong> - format harvestera dane.gov.pl</li>
-            <li>• <strong>MD5 checksum</strong> - weryfikacja integralności danych</li>
-            <li>• <strong>TERYT</strong> - kody regionów dla lokalizacji</li>
-            <li>• <strong>DCAT-AP</strong> - kategorie zgodne ze standardem europejskim</li>
-            <li>• <strong>Format maszynowy</strong> - JSON, CSV, XML (nie PDF/DOC)</li>
-          </ul>
-        </Card>
-
         <div className="mt-8 text-center">
-          <Button variant="outline" onClick={() => (window.location.href = "/")}>
-            Powrót do formularza
-          </Button>
+          <Button variant="outline" onClick={() => (window.location.href = "/")}>Powrót do formularza</Button>
         </div>
       </div>
     </div>

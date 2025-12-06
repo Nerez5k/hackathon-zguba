@@ -3,11 +3,9 @@ import { getRzeczyZnalezione, isSupabaseConfigured } from "@/lib/supabase";
 import { inMemoryStore } from "@/lib/store";
 import type { RzeczZnaleziona } from "@/lib/types";
 
-// Force dynamic rendering - no caching
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-// Escape XML special characters
 function escapeXml(str: string): string {
   return str
     .replace(/&/g, "&amp;")
@@ -17,7 +15,6 @@ function escapeXml(str: string): string {
     .replace(/'/g, "&apos;");
 }
 
-// Mapowanie kategorii na kategorie DCAT
 const KATEGORIA_TO_DCAT: Record<string, string> = {
   elektronika: "TECH",
   dokumenty: "GOVE",
@@ -29,18 +26,13 @@ const KATEGORIA_TO_DCAT: Record<string, string> = {
   inne: "SOCI",
 };
 
-// Generuj XML w formacie harvestera dane.gov.pl (XSD 1.13)
-// WAŻNE: Musi być DETERMINISTYCZNY (ten sam output dla tych samych danych)
 export function generateDaneGovXML(
   items: RzeczZnaleziona[],
   institutionName: string,
   baseUrl: string
 ): string {
-  // STAŁY extIdent - nie zmienia się!
   const datasetId = "rejestr-rzeczy-znalezionych";
   
-  // lastUpdateDate - użyj najnowszej daty modyfikacji z danych
-  // lub stałej daty jeśli brak danych
   const lastUpdate = items.length > 0 
     ? items.reduce((latest, item) => {
         const itemDate = new Date(item.data_modyfikacji);
@@ -48,7 +40,6 @@ export function generateDaneGovXML(
       }, new Date(items[0].data_modyfikacji)).toISOString()
     : "2025-12-06T00:00:00.000Z";
 
-  // Generuj zasoby (każdy przedmiot jako osobny zasób)
   const resourcesXml = items
     .map((item) => {
       const resourceUrl = `${baseUrl}/api/items/${item.id}`;
@@ -74,7 +65,6 @@ export function generateDaneGovXML(
     })
     .join("");
 
-  // Zbierz unikalne kategorie DCAT
   const dynamicCategories = items.map((i) => KATEGORIA_TO_DCAT[i.kategoria] || "SOCI");
   const allCategories = [...new Set(["GOVE", "SOCI", ...dynamicCategories])];
   const categoriesXml = allCategories.map((cat) => `<category>${cat}</category>`).join("\n\t\t");
@@ -119,15 +109,12 @@ export function generateDaneGovXML(
 </ns2:datasets>`;
 }
 
-// Endpoint XML dla harvestera dane.gov.pl
 export async function GET(request: NextRequest) {
   try {
-    // Pobierz base URL
     const protocol = request.headers.get("x-forwarded-proto") || "https";
     const host = request.headers.get("host") || "localhost:3000";
     const baseUrl = `${protocol}://${host}`;
 
-    // Pobierz dane
     let items: RzeczZnaleziona[];
     
     if (isSupabaseConfigured()) {
@@ -136,10 +123,8 @@ export async function GET(request: NextRequest) {
       items = inMemoryStore.getAll();
     }
 
-    // Generuj XML
     const xml = generateDaneGovXML(items, "Biuro Rzeczy Znalezionych", baseUrl);
 
-    // WAŻNE: NextResponse z explicit headers dla Vercel
     return new NextResponse(xml, {
       status: 200,
       headers: {

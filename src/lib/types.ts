@@ -1,4 +1,3 @@
-// Enum kategorii - typowany
 export enum Kategoria {
   ELEKTRONIKA = "elektronika",
   DOKUMENTY = "dokumenty",
@@ -10,7 +9,6 @@ export enum Kategoria {
   INNE = "inne",
 }
 
-// Etykiety kategorii do wyświetlania
 export const KategoriaLabels: Record<Kategoria, string> = {
   [Kategoria.ELEKTRONIKA]: "Elektronika",
   [Kategoria.DOKUMENTY]: "Dokumenty",
@@ -22,7 +20,6 @@ export const KategoriaLabels: Record<Kategoria, string> = {
   [Kategoria.INNE]: "Inne",
 };
 
-// Ikony kategorii (emoji dla prostoty)
 export const KategoriaIcons: Record<Kategoria, string> = {
   [Kategoria.ELEKTRONIKA]: "📱",
   [Kategoria.DOKUMENTY]: "📄",
@@ -34,7 +31,6 @@ export const KategoriaIcons: Record<Kategoria, string> = {
   [Kategoria.INNE]: "📦",
 };
 
-// Status przedmiotu - zgodny z ustawą o rzeczach znalezionych
 export enum Status {
   DO_ODBIORU = "do_odbioru",
   POSZUKIWANIE_WLASCICIELA = "poszukiwanie_wlasciciela",
@@ -55,7 +51,6 @@ export const StatusLabels: Record<Status, string> = {
   [Status.ZNISZCZONE]: "Zniszczone (dokumenty)",
 };
 
-// Terminy ustawowe (zgodne z nowelizacją ustawy)
 export const TERMINY_USTAWOWE = {
   ODBIÓR_BUDYNEK_PUBLICZNY_DNI: 30, // wydłużone z 3 do 30 dni
   POSZUKIWANIE_WLASCICIELA_MIESIACE: 6, // tablica ogłoszeń
@@ -64,7 +59,6 @@ export const TERMINY_USTAWOWE = {
   LIMIT_WARTOSCI_DROBNE_PLN: 230, // podniesiony limit
 };
 
-// Interfejs lokalizacji
 export interface Lokalizacja {
   opis: string;
   lat: number;
@@ -75,7 +69,6 @@ export interface Lokalizacja {
   wojewodztwo?: string;
 }
 
-// Interfejs danych urzędu
 export interface Urzad {
   nazwa: string;
   email: string;
@@ -83,7 +76,6 @@ export interface Urzad {
   adres_odbioru: string;
 }
 
-// Główny interfejs rzeczy znalezionej
 export interface RzeczZnaleziona {
   id: string;
   kategoria: Kategoria;
@@ -93,19 +85,16 @@ export interface RzeczZnaleziona {
   status: Status;
   lokalizacja: Lokalizacja;
   urzad: Urzad;
-  // Nowe pola zgodne z ustawą
   szacowana_wartosc_pln?: number; // do porównania z limitem 230 PLN
   czy_dokument_z_danymi?: boolean; // wymaga specjalnego postępowania
   czy_rzecz_niebezpieczna?: boolean; // broń, amunicja, chemikalia
   data_terminu_odbioru?: string; // 30 dni dla budynków publicznych
   data_terminu_nabycia?: string; // 6 lub 12 miesięcy
   dane_gov_institution_id?: string; // ID instytucji z dane.gov.pl
-  // Timestamps
   data_wpisu: string;
   data_modyfikacji: string;
 }
 
-// Interfejs formularza (bez id i dat systemowych)
 export interface RzeczZnalezionaForm {
   kategoria: Kategoria | null;
   nazwa_przedmiotu: string;
@@ -115,7 +104,6 @@ export interface RzeczZnalezionaForm {
   urzad: Partial<Urzad>;
 }
 
-// Domyślne wartości formularza
 export const defaultFormData: RzeczZnalezionaForm = {
   kategoria: null,
   nazwa_przedmiotu: "",
@@ -134,14 +122,12 @@ export const defaultFormData: RzeczZnalezionaForm = {
   },
 };
 
-// Krok opcjonalny ze zdjęciem (przed głównym formularzem)
 export const PHOTO_STEP = {
   id: 0,
   name: "Zdjęcie przedmiotu",
   description: "Zrób zdjęcie, a system automatycznie wypełni formularz",
 } as const;
 
-// Kroki wizarda (1-5)
 export const WIZARD_STEPS = [
   { id: 1, name: "Kategoria", description: "Wybierz kategorię przedmiotu" },
   { id: 2, name: "Opis", description: "Opisz znaleziony przedmiot" },

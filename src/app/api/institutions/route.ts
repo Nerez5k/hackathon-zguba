@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getInstitutions, getStarostwa } from "@/lib/daneGovApi";
 
-// GET - pobierz listę instytucji z dane.gov.pl
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -18,7 +17,6 @@ export async function GET(request: NextRequest) {
       result = await getInstitutions(search, page, perPage);
     }
 
-    // Przekształć do prostszego formatu
     const institutions = result.institutions.map((inst) => ({
       id: inst.id,
       nazwa: inst.attributes.title,

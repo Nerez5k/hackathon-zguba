@@ -3,7 +3,6 @@ import { inMemoryStore } from "@/lib/store";
 import type { RzeczZnaleziona } from "@/lib/types";
 import { Kategoria, Status } from "@/lib/types";
 
-// Przykładowe dane do demo (zgodne z nowelizacją ustawy)
 const DEMO_DATA: RzeczZnaleziona[] = [
   {
     id: "550e8400-e29b-41d4-a716-446655440001",
@@ -136,14 +135,11 @@ const DEMO_DATA: RzeczZnaleziona[] = [
   },
 ];
 
-// POST - załaduj przykładowe dane (do demo)
 export async function POST() {
   try {
-    // Wyczyść istniejące dane i załaduj nowe
     const existing = inMemoryStore.getAll();
     existing.forEach((item) => inMemoryStore.delete(item.id));
 
-    // Dodaj przykładowe dane
     DEMO_DATA.forEach((item) => inMemoryStore.add(item));
 
     return NextResponse.json({
@@ -160,7 +156,6 @@ export async function POST() {
   }
 }
 
-// GET - info o demo danych
 export async function GET() {
   return NextResponse.json({
     info: "Użyj POST aby załadować przykładowe dane do demo",

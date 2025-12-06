@@ -1,6 +1,5 @@
 import type { RzeczZnaleziona } from "./types";
 
-// Singleton store for in-memory items (used when Supabase is not configured)
 class InMemoryStore {
   private items: RzeczZnaleziona[] = [];
 
@@ -34,6 +33,5 @@ class InMemoryStore {
   }
 }
 
-// Global instance
 export const inMemoryStore = new InMemoryStore();
 

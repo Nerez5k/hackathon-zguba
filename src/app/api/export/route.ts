@@ -118,7 +118,6 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const format = searchParams.get("format") || "json";
     
-    // Filtry
     const kategoria = searchParams.get("kategoria");
     const powiat = searchParams.get("powiat");
     const status = searchParams.get("status");

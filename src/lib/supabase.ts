@@ -1,12 +1,10 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import type { RzeczZnaleziona, Urzad } from "./types";
 
-// Lazy-initialized Supabase client
 let supabaseClient: SupabaseClient | null = null;
 
 function getSupabaseClient(): SupabaseClient | null {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  // Some Supabase templates expose publishable key as NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY
   const supabaseAnonKey =
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY;
@@ -22,7 +20,6 @@ function getSupabaseClient(): SupabaseClient | null {
   return supabaseClient;
 }
 
-// Funkcje pomocnicze do konwersji między formatem aplikacji a bazą danych
 
 export function toDbFormat(item: RzeczZnaleziona) {
   return {
@@ -46,7 +43,6 @@ export function toDbFormat(item: RzeczZnaleziona) {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function fromDbFormat(row: any): RzeczZnaleziona {
   return {
     id: row.id,
@@ -75,7 +71,6 @@ export function fromDbFormat(row: any): RzeczZnaleziona {
   };
 }
 
-// API Functions
 
 export async function createRzeczZnaleziona(item: RzeczZnaleziona) {
   const supabase = getSupabaseClient();
@@ -122,8 +117,7 @@ export async function updateRzeczZnaleziona(id: string, updates: Partial<RzeczZn
   const supabase = getSupabaseClient();
   if (!supabase) throw new Error("Supabase not configured");
   
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const dbUpdates: any = {};
+  const dbUpdates: Record<string, unknown> = {};
   
   if (updates.kategoria) dbUpdates.kategoria = updates.kategoria;
   if (updates.nazwa_przedmiotu) dbUpdates.nazwa_przedmiotu = updates.nazwa_przedmiotu;
@@ -170,7 +164,6 @@ export async function deleteRzeczZnaleziona(id: string) {
   return true;
 }
 
-// Funkcje dla urzędów
 export async function saveUrzad(urzad: Urzad) {
   const supabase = getSupabaseClient();
   if (!supabase) throw new Error("Supabase not configured");
@@ -203,7 +196,6 @@ export async function getUrzedy() {
   return data || [];
 }
 
-// Helper to check if Supabase is configured
 export function isSupabaseConfigured(): boolean {
   return !!(
     process.env.NEXT_PUBLIC_SUPABASE_URL &&

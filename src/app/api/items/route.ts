@@ -8,7 +8,6 @@ import {
 import { inMemoryStore } from "@/lib/store";
 import type { RzeczZnaleziona } from "@/lib/types";
 
-// GET - pobierz wszystkie rzeczy znalezione
 export async function GET() {
   try {
     if (isSupabaseConfigured()) {
@@ -29,12 +28,10 @@ export async function GET() {
   }
 }
 
-// POST - dodaj nową rzecz znalezioną
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     
-    // Validate input
     const result = rzeczZnalezionaSchema.safeParse(body);
     if (!result.success) {
       return NextResponse.json(

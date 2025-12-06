@@ -1,5 +1,3 @@
-// Integracja z API dane.gov.pl
-// Dokumentacja: https://api.dane.gov.pl/doc
 
 const API_BASE = "https://api.dane.gov.pl/1.4";
 
@@ -33,7 +31,6 @@ export interface DaneGovResponse<T> {
   };
 }
 
-// Pobierz listę instytucji (starostw) z API dane.gov.pl
 export async function getInstitutions(
   search?: string,
   page: number = 1,
@@ -45,7 +42,6 @@ export async function getInstitutions(
       page: page.toString(),
     });
 
-    // Szukaj starostw lub urzędów gmin
     if (search) {
       params.append("q", search);
     }
@@ -63,7 +59,6 @@ export async function getInstitutions(
 
     const data: DaneGovResponse<DaneGovInstitution> = await response.json();
 
-    // Usuń znaczniki HTML z tytułów (API zwraca <mark> dla wyszukiwania)
     const cleanedInstitutions = data.data.map((inst) => ({
       ...inst,
       attributes: {
@@ -82,7 +77,6 @@ export async function getInstitutions(
   }
 }
 
-// Pobierz listę starostw (filtrowanie po słowie "starostwo")
 export async function getStarostwa(
   search?: string,
   page: number = 1,
@@ -92,7 +86,6 @@ export async function getStarostwa(
   return getInstitutions(searchTerm, page, perPage);
 }
 
-// Pobierz listę urzędów gmin/miast
 export async function getUrzedyGmin(
   search?: string,
   page: number = 1,
@@ -102,7 +95,6 @@ export async function getUrzedyGmin(
   return getInstitutions(searchTerm, page, perPage);
 }
 
-// Konwertuj instytucję z API na format urzędu w naszej aplikacji
 export function institutionToUrzad(inst: DaneGovInstitution) {
   const addr = inst.attributes;
   const fullAddress = [
@@ -120,7 +112,6 @@ export function institutionToUrzad(inst: DaneGovInstitution) {
     email: addr.email || "",
     telefon: addr.tel || "",
     adres_odbioru: fullAddress,
-    // Dodatkowe dane z API
     miasto: addr.city,
     regon: addr.regon,
     website: addr.website,
@@ -129,10 +120,9 @@ export function institutionToUrzad(inst: DaneGovInstitution) {
   };
 }
 
-// Cache dla instytucji (żeby nie odpytywać API za każdym razem)
 let cachedStarostwa: DaneGovInstitution[] | null = null;
 let cacheTimestamp: number = 0;
-const CACHE_DURATION = 1000 * 60 * 60; // 1 godzina
+const CACHE_DURATION = 1000 * 60 * 60;
 
 export async function getCachedStarostwa(): Promise<DaneGovInstitution[]> {
   const now = Date.now();
@@ -141,7 +131,6 @@ export async function getCachedStarostwa(): Promise<DaneGovInstitution[]> {
     return cachedStarostwa;
   }
 
-  // Pobierz wszystkie starostwa (jest ich ~380)
   const result = await getStarostwa("", 1, 500);
   cachedStarostwa = result.institutions;
   cacheTimestamp = now;

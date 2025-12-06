@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { Kategoria, Status } from "./types";
 
-// Schema lokalizacji
 export const lokalizacjaSchema = z.object({
   opis: z.string().min(3, "Opis miejsca musi mieć minimum 3 znaki"),
   lat: z.number().min(-90).max(90),
@@ -12,7 +11,6 @@ export const lokalizacjaSchema = z.object({
   wojewodztwo: z.string().optional(),
 });
 
-// Schema urzędu
 export const urzadSchema = z.object({
   nazwa: z.string().min(3, "Nazwa urzędu musi mieć minimum 3 znaki"),
   email: z.string().email("Nieprawidłowy adres email"),
@@ -20,7 +18,6 @@ export const urzadSchema = z.object({
   adres_odbioru: z.string().min(5, "Adres odbioru musi mieć minimum 5 znaków"),
 });
 
-// Schema główna rzeczy znalezionej
 export const rzeczZnalezionaSchema = z.object({
   id: z.string().uuid(),
   kategoria: z.nativeEnum(Kategoria),
@@ -37,7 +34,6 @@ export const rzeczZnalezionaSchema = z.object({
   data_modyfikacji: z.string(),
 });
 
-// Schema formularza (bez id i dat systemowych)
 export const rzeczZnalezionaFormSchema = z.object({
   kategoria: z.nativeEnum(Kategoria, { error: "Wybierz kategorię przedmiotu" }),
   nazwa_przedmiotu: z.string().min(2, "Nazwa przedmiotu musi mieć minimum 2 znaki"),
@@ -50,7 +46,6 @@ export const rzeczZnalezionaFormSchema = z.object({
   urzad: urzadSchema,
 });
 
-// Walidacja poszczególnych kroków
 export const stepSchemas = {
   1: z.object({
     kategoria: z.nativeEnum(Kategoria, { error: "Wybierz kategorię przedmiotu" }),

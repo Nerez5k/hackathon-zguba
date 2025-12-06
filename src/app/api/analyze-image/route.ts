@@ -46,7 +46,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Ensure proper base64 format
     const imageData = image.startsWith("data:") 
       ? image 
       : `data:image/jpeg;base64,${image}`;
@@ -88,10 +87,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Parse JSON from response
     let parsedData;
     try {
-      // Try to extract JSON from the response (in case there's extra text)
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         parsedData = JSON.parse(jsonMatch[0]);
@@ -106,7 +103,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate kategoria
     const validCategories = [
       "elektronika", "dokumenty", "bizuteria", "odziez", 
       "klucze", "portfel", "torba", "inne"

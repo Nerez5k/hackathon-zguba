@@ -7,7 +7,6 @@ import {
 } from "@/lib/supabase";
 import { inMemoryStore } from "@/lib/store";
 
-// GET - pobierz pojedynczą rzecz
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -43,7 +42,6 @@ export async function GET(
   }
 }
 
-// PATCH - aktualizuj rzecz
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -80,7 +78,6 @@ export async function PATCH(
   }
 }
 
-// DELETE - usuń rzecz
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

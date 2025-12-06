@@ -1,13 +1,8 @@
-// ============================================================================
-// EKSPORT XML DLA DANE.GOV.PL - ZGODNY Z HARVESTEREM
-// Format: urn:otwarte-dane:harvester:1.13
-// ============================================================================
 
 import { getRzeczyZnalezione, isSupabaseConfigured } from "@/lib/supabase";
 import { inMemoryStore } from "@/lib/store";
 import type { RzeczZnaleziona } from "@/lib/types";
 
-// Escape XML special characters
 function escapeXml(str: string): string {
   return str
     .replace(/&/g, "&amp;")
@@ -177,7 +172,6 @@ export function md5(str: string): string {
   return (wordToHex(a) + wordToHex(b) + wordToHex(c) + wordToHex(d)).toLowerCase();
 }
 
-// Mapowanie kategorii na kategorie DCAT
 const KATEGORIA_TO_DCAT: Record<string, string> = {
   elektronika: "TECH",
   dokumenty: "GOVE",
@@ -189,7 +183,6 @@ const KATEGORIA_TO_DCAT: Record<string, string> = {
   inne: "SOCI",
 };
 
-// Pobierz wszystkie dane
 export async function getItems(): Promise<RzeczZnaleziona[]> {
   if (isSupabaseConfigured()) {
     return await getRzeczyZnalezione();
@@ -198,7 +191,6 @@ export async function getItems(): Promise<RzeczZnaleziona[]> {
   }
 }
 
-// Generuj XML w formacie harvestera dane.gov.pl (XSD 1.13)
 export function generateDaneGovXML(
   items: RzeczZnaleziona[],
   institutionName: string,
@@ -207,7 +199,6 @@ export function generateDaneGovXML(
   const now = new Date().toISOString();
   const datasetId = `rzeczy-znalezione-${Date.now()}`;
 
-  // Generuj zasoby (każdy przedmiot jako osobny zasób)
   const resourcesXml = items
     .map((item) => {
       const resourceUrl = `${baseUrl}/api/items/${item.id}`;
@@ -233,7 +224,6 @@ export function generateDaneGovXML(
     })
     .join("");
 
-  // Zbierz unikalne kategorie DCAT (zawsze GOVE i SOCI + dynamiczne z przedmiotów)
   const dynamicCategories = items.map((i) => KATEGORIA_TO_DCAT[i.kategoria] || "SOCI");
   const allCategories = [...new Set(["GOVE", "SOCI", ...dynamicCategories])];
   const categoriesXml = allCategories.map((cat) => `<category>${cat}</category>`).join("\n\t\t\t");
@@ -278,7 +268,6 @@ export function generateDaneGovXML(
 </ns2:datasets>`;
 }
 
-// Generuj CSV w formacie zgodnym z dane.gov.pl
 export function generateDaneGovCSV(items: RzeczZnaleziona[]): string {
   const headers = [
     "id",

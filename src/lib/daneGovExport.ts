@@ -17,7 +17,6 @@ function escapeXml(str: string): string {
     .replace(/'/g, "&apos;");
 }
 
-// Simple MD5 implementation for compatibility (works on Vercel Edge)
 export function md5(str: string): string {
   function rotateLeft(x: number, n: number): number {
     return (x << n) | (x >>> (32 - n));

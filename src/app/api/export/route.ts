@@ -3,11 +3,8 @@ import { getRzeczyZnalezione, isSupabaseConfigured } from "@/lib/supabase";
 import { inMemoryStore } from "@/lib/store";
 import type { RzeczZnaleziona } from "@/lib/types";
 
-// Funkcja do usuwania danych wewnętrznych przed eksportem (RODO)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function sanitizeForExport(item: any): RzeczZnaleziona {
   const {
-    // Pola do usunięcia (wewnętrzne, nie eksportujemy)
     zdjecie_base64,
     zdjecie_url,
     notatki_wewnetrzne,
@@ -17,7 +14,6 @@ function sanitizeForExport(item: any): RzeczZnaleziona {
   return publicData as RzeczZnaleziona;
 }
 
-// Convert items to CSV format
 function toCSV(items: RzeczZnaleziona[]): string {
   const headers = [
     "id",
@@ -66,7 +62,6 @@ function toCSV(items: RzeczZnaleziona[]): string {
   return [headers.join(","), ...rows.map((row) => row.join(","))].join("\n");
 }
 
-// Convert items to XML format
 function toXML(items: RzeczZnaleziona[]): string {
   const escapeXml = (str: string) =>
     str
@@ -118,8 +113,6 @@ function toXML(items: RzeczZnaleziona[]): string {
   </dane>
 </rzeczy_znalezione>`;
 }
-
-// GET - eksportuj dane w wybranym formacie z opcjonalnymi filtrami
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -130,7 +123,7 @@ export async function GET(request: NextRequest) {
     const powiat = searchParams.get("powiat");
     const status = searchParams.get("status");
     const wojewodztwo = searchParams.get("wojewodztwo");
-    const id = searchParams.get("id"); // eksport pojedynczego rekordu
+    const id = searchParams.get("id");
 
     let rawItems: RzeczZnaleziona[];
 
@@ -140,7 +133,6 @@ export async function GET(request: NextRequest) {
       rawItems = inMemoryStore.getAll();
     }
 
-    // Zastosuj filtry
     let filteredItems = rawItems;
     
     if (id) {
@@ -163,7 +155,6 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Sanitize items - usuń dane wewnętrzne (zdjęcia, notatki) przed eksportem
     const items = filteredItems.map(sanitizeForExport);
 
     const dateStr = new Date().toISOString().split("T")[0];

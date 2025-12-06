@@ -13,13 +13,11 @@ export default function ApiDocsPage() {
   useEffect(() => {
     setBaseUrl(window.location.origin);
     
-    // Pobierz MD5
     fetch("/harvester/rzeczy-znalezione.md5")
       .then((res) => res.text())
       .then((hash) => setMd5Hash(hash.trim()))
       .catch(() => setMd5Hash(""));
 
-    // Pobierz liczbę rekordów
     fetch("/api/items")
       .then((res) => res.json())
       .then((data) => setItemsCount(Array.isArray(data) ? data.length : 0))
@@ -34,7 +32,6 @@ export default function ApiDocsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-gov-primary text-white py-8">
         <div className="max-w-4xl mx-auto px-4">
           <div className="flex items-center gap-4 mb-4">
@@ -52,7 +49,6 @@ export default function ApiDocsPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-8">
-        {/* Status */}
         <Card className="mb-8 border-2 border-green-500 bg-green-50">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
@@ -69,7 +65,6 @@ export default function ApiDocsPage() {
           </div>
         </Card>
 
-        {/* Endpointy harvestera */}
         <Card className="mb-8 border-2 border-gov-blue">
           <h2 className="text-xl font-bold text-gov-black mb-4 pb-2 border-b border-gov-border">
             🎯 Endpointy dla harvestera
@@ -98,7 +93,6 @@ export default function ApiDocsPage() {
               </p>
             </div>
 
-            {/* MD5 */}
             <div className="bg-gov-blue-light rounded-lg p-4 border border-gov-blue">
               <div className="flex items-center gap-2 mb-2">
                 <span className="px-2 py-1 bg-gov-blue text-white text-xs font-bold rounded">GET</span>
@@ -124,7 +118,6 @@ export default function ApiDocsPage() {
           </div>
         </Card>
 
-        {/* Linki */}
         <div className="flex flex-wrap gap-4 justify-center">
           <Button onClick={() => window.open("/harvester/rzeczy-znalezione.xml", "_blank")}>
             Otwórz XML
@@ -142,7 +135,6 @@ export default function ApiDocsPage() {
         </div>
       </main>
 
-      {/* Footer */}
       <footer className="bg-gov-black text-white py-6 mt-12">
         <div className="max-w-4xl mx-auto px-4 text-center text-sm text-white/60">
           <p>Rejestr Rzeczy Znalezionych | HackNation 2025</p>

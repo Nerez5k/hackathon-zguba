@@ -1,0 +1,175 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dane.gov.pl/schemas/rzeczy-znalezione/v1.1",
+  "title": "Rzecz Znaleziona",
+  "description": "Wzorcowy schemat danych dla rzeczy znalezionych zgodny z portalem dane.gov.pl i nowelizacją ustawy o rzeczach znalezionych (2025)",
+  "type": "object",
+  "required": [
+    "id",
+    "kategoria",
+    "nazwa_przedmiotu",
+    "opis",
+    "data_znalezienia",
+    "status",
+    "lokalizacja",
+    "urzad",
+    "data_wpisu",
+    "data_modyfikacji"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unikalny identyfikator UUID v4"
+    },
+    "kategoria": {
+      "type": "string",
+      "enum": [
+        "elektronika",
+        "dokumenty",
+        "bizuteria",
+        "odziez",
+        "klucze",
+        "portfel",
+        "torba",
+        "inne"
+      ],
+      "description": "Kategoria znalezionego przedmiotu"
+    },
+    "nazwa_przedmiotu": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 200,
+      "description": "Krótka nazwa przedmiotu"
+    },
+    "opis": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 2000,
+      "description": "Szczegółowy opis przedmiotu"
+    },
+    "data_znalezienia": {
+      "type": "string",
+      "format": "date",
+      "description": "Data znalezienia przedmiotu (YYYY-MM-DD)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "do_odbioru",
+        "poszukiwanie_wlasciciela",
+        "wydane",
+        "przekazane_starostwo",
+        "przekazane_skarb_panstwa",
+        "nabyte_przez_znalazce",
+        "zniszczone"
+      ],
+      "description": "Status przedmiotu zgodny z ustawą o rzeczach znalezionych"
+    },
+    "szacowana_wartosc_pln": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Szacowana wartość przedmiotu w PLN (limit dla rzeczy drobnych: 230 PLN)"
+    },
+    "czy_dokument_z_danymi": {
+      "type": "boolean",
+      "description": "Czy przedmiot zawiera dane osobowe (wymaga specjalnego postępowania)"
+    },
+    "czy_rzecz_niebezpieczna": {
+      "type": "boolean",
+      "description": "Czy przedmiot jest niebezpieczny (broń, amunicja, materiały wybuchowe)"
+    },
+    "lokalizacja": {
+      "type": "object",
+      "required": ["opis", "lat", "lng"],
+      "properties": {
+        "opis": {
+          "type": "string",
+          "minLength": 3,
+          "description": "Opis miejsca znalezienia"
+        },
+        "lat": {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90,
+          "description": "Szerokość geograficzna (latitude)"
+        },
+        "lng": {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180,
+          "description": "Długość geograficzna (longitude)"
+        },
+        "gmina_teryt": {
+          "type": "string",
+          "pattern": "^[0-9]{7}$",
+          "description": "Kod TERYT gminy (7 cyfr)"
+        },
+        "gmina_nazwa": {
+          "type": "string",
+          "description": "Nazwa gminy"
+        },
+        "powiat": {
+          "type": "string",
+          "description": "Nazwa powiatu (właściwy starosta)"
+        },
+        "wojewodztwo": {
+          "type": "string",
+          "description": "Nazwa województwa"
+        }
+      },
+      "description": "Lokalizacja znalezienia - według miejsca znalezienia określa się właściwego starostę"
+    },
+    "urzad": {
+      "type": "object",
+      "required": ["nazwa", "email", "telefon", "adres_odbioru"],
+      "properties": {
+        "nazwa": {
+          "type": "string",
+          "minLength": 3,
+          "description": "Nazwa urzędu (starostwa powiatowego)"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Adres email kontaktowy"
+        },
+        "telefon": {
+          "type": "string",
+          "minLength": 9,
+          "description": "Numer telefonu kontaktowego"
+        },
+        "adres_odbioru": {
+          "type": "string",
+          "minLength": 5,
+          "description": "Adres, pod którym można odebrać przedmiot"
+        }
+      }
+    },
+    "dane_gov_institution_id": {
+      "type": "string",
+      "description": "ID instytucji z API dane.gov.pl (opcjonalne)"
+    },
+    "data_terminu_odbioru": {
+      "type": "string",
+      "format": "date",
+      "description": "Termin odbioru (30 dni dla budynków użyteczności publicznej)"
+    },
+    "data_terminu_nabycia": {
+      "type": "string",
+      "format": "date",
+      "description": "Termin nabycia przez znalazcę (6 lub 12 miesięcy)"
+    },
+    "data_wpisu": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Data i czas utworzenia wpisu (ISO 8601)"
+    },
+    "data_modyfikacji": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Data i czas ostatniej modyfikacji (ISO 8601)"
+    }
+  },
+  "additionalProperties": false
+}

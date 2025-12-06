@@ -1,0 +1,166 @@
+@import "tailwindcss";
+
+/* Import Leaflet CSS */
+@import "leaflet/dist/leaflet.css";
+
+:root {
+  /* Kolory zgodne z Design System Obywatel (gov.pl) */
+  --gov-blue: #0052A5;         /* Podstawowy niebieski */
+  --gov-blue-dark: #004080;    /* Ciemniejszy niebieski */
+  --gov-blue-light: #E6EFF8;   /* Bardzo jasny niebieski tło */
+  --gov-red: #DC143C;          /* Czerwień flagowa */
+  --gov-white: #FFFFFF;
+  --gov-gray-light: #F5F5F5;
+  --gov-gray: #666666;
+  --gov-gray-dark: #333333;
+  --gov-black: #000000;
+  
+  /* Mapowanie na zmienne używane w aplikacji */
+  --gov-primary: var(--gov-blue);
+  --gov-primary-dark: var(--gov-blue-dark);
+  --gov-primary-light: var(--gov-blue-light);
+  --gov-accent: var(--gov-black);
+  --gov-background: var(--gov-white);
+  --gov-surface: var(--gov-white);
+  --gov-text: var(--gov-gray-dark);
+  --gov-text-light: var(--gov-gray);
+  --gov-success: #00703C;     /* Zieleń urzędowa */
+  --gov-success-light: #E5F4EE;
+  --gov-error: #D4351C;       /* Czerwień błędu */
+  --gov-error-light: #FBE9E7;
+  --gov-warning: #FFCC00;     /* Żółty ostrzegawczy */
+  --gov-warning-light: #FFFBE5;
+  --gov-border: #DEE2E6;
+  
+  /* Tło i tekst */
+  --background: var(--gov-background);
+  --foreground: var(--gov-text);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-gov-primary: var(--gov-primary);
+  --color-gov-primary-dark: var(--gov-primary-dark);
+  --color-gov-primary-light: var(--gov-primary-light);
+  --color-gov-accent: var(--gov-accent);
+  --color-gov-surface: var(--gov-surface);
+  --color-gov-text: var(--gov-text);
+  --color-gov-text-light: var(--gov-text-light);
+  --color-gov-success: var(--gov-success);
+  --color-gov-success-light: var(--gov-success-light);
+  --color-gov-error: var(--gov-error);
+  --color-gov-error-light: var(--gov-error-light);
+  --color-gov-warning: var(--gov-warning);
+  --color-gov-warning-light: var(--gov-warning-light);
+  --color-gov-border: var(--gov-border);
+  --color-gov-red: var(--gov-red);
+  --color-gov-blue: var(--gov-blue);
+}
+
+/* Base styles */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--gov-background);
+  color: var(--gov-text);
+  font-family: "Lato", "Open Sans", sans-serif;
+  line-height: 1.5;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Focus styles dla WCAG - wyraźna żółta ramka na czarnym tle lub odwrotnie */
+*:focus-visible {
+  outline: 3px solid #FD0;
+  outline-offset: 0;
+  box-shadow: 0 0 0 2px #000;
+}
+
+/* Skip link dla dostępności */
+.skip-link {
+  position: absolute;
+  top: -60px;
+  left: 0;
+  background: var(--gov-warning);
+  color: black;
+  font-weight: bold;
+  padding: 12px 20px;
+  z-index: 1000;
+  transition: top 0.2s;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--gov-black);
+  letter-spacing: -0.01em;
+}
+
+/* Links */
+a {
+  color: var(--gov-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+a:hover {
+  color: var(--gov-primary-dark);
+  text-decoration-thickness: 2px;
+}
+
+/* Form elements */
+input, select, textarea {
+  font-family: inherit;
+  font-size: 1rem;
+  border-radius: 0 !important; /* Kanciaste inputy gov style */
+}
+
+/* Buttons - reset rounded corners for gov style */
+button {
+  border-radius: 0 !important;
+}
+
+/* Leaflet map overrides */
+.leaflet-container {
+  font-family: inherit;
+  border-radius: 0 !important;
+  border: 1px solid var(--gov-border);
+}
+
+.leaflet-control-zoom a {
+  color: var(--gov-text) !important;
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white;
+  }
+}
+
+/* Animacje wyłączone dla powagi urzędu, chyba że niezbędne */
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

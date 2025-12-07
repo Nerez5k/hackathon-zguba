@@ -132,8 +132,9 @@ function DashboardContent() {
 
 export default function Home() {
   return (
-    <ProtectedRoute>
-      <DashboardContent />
-    </ProtectedRoute>
+    //<ProtectedRoute>
+      //<DashboardContent />
+    //</ProtectedRoute>
+    <div>Under Maintentance</div>
   );
 }
